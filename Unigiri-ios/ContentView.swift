@@ -3,10 +3,13 @@ import SwiftUI
 enum Tab {
     case battle
     case cardList
+    case deck
 }
 
 struct ContentView: View {
     @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var deckListViewModel: DeckListViewModel
+    let makeDeckEditViewModel: (DeckModel?) -> DeckEditViewModel
     @State private var selectedTab: Tab = .battle
     @State private var showSheet = false
 
@@ -26,6 +29,16 @@ struct ContentView: View {
                         Text("CardList")
                     }
                     .tag(Tab.cardList)
+
+                DeckListScreen(
+                    viewModel: deckListViewModel,
+                    makeEditViewModel: makeDeckEditViewModel
+                )
+                .tabItem {
+                    Image(systemName: "rectangle.stack")
+                    Text("Deck")
+                }
+                .tag(Tab.deck)
             }
 
             if selectedTab == .cardList {
