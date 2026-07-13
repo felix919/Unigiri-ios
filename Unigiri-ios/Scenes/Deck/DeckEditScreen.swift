@@ -6,13 +6,11 @@ struct DeckEditScreen: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showFilterSheet = false
 
-    private let selectedColumns = [
-        GridItem(.flexible(), spacing: 4),
-        GridItem(.flexible(), spacing: 4),
-        GridItem(.flexible(), spacing: 4),
-        GridItem(.flexible(), spacing: 4),
-        GridItem(.flexible(), spacing: 4)
-    ]
+    // 基本6列、6列で4行目に折り返す(19種類以上)場合は7列に切り替える
+    private var selectedColumns: [GridItem] {
+        let columnCount = viewModel.uiState.selectedEntries.count >= 19 ? 7 : 6
+        return Array(repeating: GridItem(.flexible(), spacing: 4), count: columnCount)
+    }
 
     private let resultColumns = [
         GridItem(.flexible(), spacing: 4),
