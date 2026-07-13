@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum DeckEditTarget: Identifiable {
     case new
@@ -39,11 +40,15 @@ struct DeckListScreen: View {
                 } else {
                     List {
                         ForEach(viewModel.uiState.decks) { deck in
-                            DeckRow(deck: deck)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    editTarget = .edit(deck)
-                                }
+                            DeckRow(
+                                deck: deck,
+                                onDelete: { viewModel.delete(deck: deck) },
+                                onShare: { viewModel.shareDeckImage(deck) }
+                            )
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                editTarget = .edit(deck)
+                            }
                         }
                         .onDelete { offsets in
                             viewModel.delete(at: offsets)
@@ -63,12 +68,33 @@ struct DeckListScreen: View {
         .fullScreenCover(item: $editTarget, onDismiss: { viewModel.load() }) { target in
             DeckEditScreen(viewModel: makeEditViewModel(target.deck))
         }
+        .sheet(item: $viewModel.uiState.shareItem) { item in
+            ShareSheet(items: [item.image])
+        }
+        .overlay {
+            if viewModel.uiState.isGeneratingShareImage {
+                ProgressView()
+            }
+        }
+        .alert(
+            "共有に失敗しました",
+            isPresented: Binding(
+                get: { viewModel.uiState.shareError != nil },
+                set: { if !$0 { viewModel.uiState.shareError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.uiState.shareError ?? "")
+        }
         .task { viewModel.load() }
     }
 }
 
 private struct DeckRow: View {
     let deck: DeckModel
+    let onDelete: () -> Void
+    let onShare: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -93,6 +119,35 @@ private struct DeckRow: View {
             }
 
             Spacer()
+
+            Button {
+                onDelete()
+            } label: {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.borderless)
+
+            Menu {
+                Button("デッキ画像を共有") {
+                    onShare()
+                }
+                .disabled(deck.totalCount != DeckValidator.deckSize)
+            } label: {
+                Image(systemName: "ellipsis")
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.borderless)
         }
     }
+}
+
+private struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
