@@ -45,6 +45,13 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 - SourceKit が新規ファイルの型を「Cannot find type」と誤検知することがある — xcodebuild が通れば無視してよい
 - カード画像は `Referer: https://zutomayocard.net/` ヘッダ必須 (Kingfisher の `requestModifier`)。画像表示は `CardView` / `SelectedCardCell` を再利用すること
 
+## テーマ (公式サイト準拠・ダークモード固定)
+
+- ブランドカラーは `Theme/AppTheme.swift` の `Color` extension に集約 (Android版 `ui/theme/Color.kt` と同一値): 背景 `#422881` / primary `#8B7FD6` (AccentColor アセットも同値) / アクセント `#36AE37` (公式グリーン) / バー類 `#2E1B5B` / シート類 `#37216C`
+- NavigationBar / TabBar は `AppAppearance.configure()` (App init で呼ぶ) の UIKit appearance proxy で紫トーンに統一。タブ選択色は公式グリーン
+- **全画面ダークモード固定**: ルートで `.preferredColorScheme(.dark)`
+- 各画面の背景は `Color.mainPurple`、List は `.scrollContentBackground(.hidden)` + `.listRowBackground` で統一。新しい画面を追加するときも同じパターンに従うこと
+
 ## API
 
 - Meilisearch: POST `https://search.zutomayocard.net/indexes/zutomayocard_cards/search` (`APIService`、Bearer トークンはハードコード)
