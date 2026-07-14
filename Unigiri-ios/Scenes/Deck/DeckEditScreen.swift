@@ -34,6 +34,7 @@ struct DeckEditScreen: View {
                     resultSection
                 }
             }
+            .background(Color.mainPurple.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -77,7 +78,7 @@ struct DeckEditScreen: View {
 
                 Text("\(viewModel.uiState.validation.totalCount)/\(DeckValidator.deckSize)")
                     .font(.headline)
-                    .foregroundColor(viewModel.uiState.validation.isComplete ? .green : .orange)
+                    .foregroundColor(viewModel.uiState.validation.isComplete ? .brandGreen : .orange)
             }
 
             if viewModel.uiState.validation.showsCharacterWarning {

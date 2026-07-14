@@ -11,6 +11,9 @@ struct SearchScreen: View {
 
     var body: some View {
         ZStack {
+            Color.mainPurple
+                .ignoresSafeArea()
+
             if viewModel.uiState.isLoading {
                 ProgressView()
             } else if let error = viewModel.uiState.error {

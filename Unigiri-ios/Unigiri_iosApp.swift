@@ -8,6 +8,8 @@ struct Unigiri_iosApp: App {
     @StateObject private var deckListViewModel: DeckListViewModel
 
     init() {
+        AppAppearance.configure()
+
         let container = try! ModelContainer(for: DeckEntity.self)
         self.modelContainer = container
         _deckListViewModel = StateObject(
@@ -27,6 +29,8 @@ struct Unigiri_iosApp: App {
                     )
                 }
             )
+            // 全画面ダークモード固定
+            .preferredColorScheme(.dark)
         }
     }
 }

@@ -86,6 +86,7 @@ struct HandSimulatorSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+        .presentationBackground(Color.surfacePurpleContainer)
     }
 }
 

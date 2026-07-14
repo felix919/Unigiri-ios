@@ -86,6 +86,7 @@ struct CronusView: View {
 
                 Text("+\(distanceFromSelected)")
                     .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.black)
                     .opacity(opacity)
                     .position(
                         x: radius + x,
@@ -120,10 +121,11 @@ struct CronusView: View {
             return .orange
         }
 
+        // Android版と同じ不透明色 (半透明だと紫背景が透けて濁るため)
         if index > 8 {
-            return Color.yellow.opacity(0.35)
+            return Color(red: 0xFF / 255, green: 0xF5 / 255, blue: 0x9D / 255) // #FFF59D
         } else {
-            return Color.blue.opacity(0.25)
+            return Color(red: 0x90 / 255, green: 0xCA / 255, blue: 0xF9 / 255) // #90CAF9
         }
     }
 

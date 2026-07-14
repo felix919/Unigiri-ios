@@ -51,13 +51,17 @@ struct DeckListScreen: View {
                             .onTapGesture {
                                 editTarget = .edit(deck)
                             }
+                            .listRowBackground(Color.clear)
                         }
                         .onDelete { offsets in
                             viewModel.delete(at: offsets)
                         }
                     }
+                    .scrollContentBackground(.hidden)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.mainPurple.ignoresSafeArea())
             .navigationTitle("デッキ")
             .toolbar {
                 Button {

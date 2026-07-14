@@ -42,6 +42,9 @@ struct FilterBottomSheet: View {
                     filterAttackRangeSection
                 }
             }
+            .listRowBackground(Color.surfacePurpleHigh)
+            .scrollContentBackground(.hidden)
+            .background(Color.surfacePurpleContainer.ignoresSafeArea())
             .navigationTitle("検索条件")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -50,6 +53,7 @@ struct FilterBottomSheet: View {
                 }
             }
         }
+        .presentationBackground(Color.surfacePurpleContainer)
     }
 
     // MARK: - 属性

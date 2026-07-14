@@ -16,17 +16,8 @@ struct BattleScreen: View {
 
             ZStack {
 
-                LinearGradient(
-                    colors: [
-                        Color.blue.opacity(0.15),
-                        Color.blue.opacity(0.15),
-                        Color.yellow.opacity(0.2),
-                        Color.yellow.opacity(0.2)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                Color.mainPurple
+                    .ignoresSafeArea()
 
                 VStack(spacing: 0) {
 
