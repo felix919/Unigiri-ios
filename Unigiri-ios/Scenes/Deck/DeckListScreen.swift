@@ -25,6 +25,7 @@ struct DeckListScreen: View {
     let makeEditViewModel: (DeckModel?) -> DeckEditViewModel
 
     @State private var editTarget: DeckEditTarget?
+    @State private var handCheckDeck: DeckModel?
 
     var body: some View {
         NavigationStack {
@@ -43,7 +44,8 @@ struct DeckListScreen: View {
                             DeckRow(
                                 deck: deck,
                                 onDelete: { viewModel.delete(deck: deck) },
-                                onShare: { viewModel.shareDeckImage(deck) }
+                                onShare: { viewModel.shareDeckImage(deck) },
+                                onHandCheck: { handCheckDeck = deck }
                             )
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -71,6 +73,9 @@ struct DeckListScreen: View {
         .sheet(item: $viewModel.uiState.shareItem) { item in
             ShareSheet(items: [item.image])
         }
+        .sheet(item: $handCheckDeck) { deck in
+            HandSimulatorSheet(deck: deck)
+        }
         .overlay {
             if viewModel.uiState.isGeneratingShareImage {
                 ProgressView()
@@ -95,6 +100,7 @@ private struct DeckRow: View {
     let deck: DeckModel
     let onDelete: () -> Void
     let onShare: () -> Void
+    let onHandCheck: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -130,6 +136,11 @@ private struct DeckRow: View {
             Menu {
                 Button("デッキ画像を共有") {
                     onShare()
+                }
+                .disabled(deck.totalCount != DeckValidator.deckSize)
+
+                Button("初期手札チェック") {
+                    onHandCheck()
                 }
                 .disabled(deck.totalCount != DeckValidator.deckSize)
             } label: {
