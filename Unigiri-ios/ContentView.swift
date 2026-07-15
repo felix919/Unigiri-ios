@@ -4,6 +4,7 @@ enum Tab {
     case battle
     case cardList
     case deck
+    case about
 }
 
 struct ContentView: View {
@@ -39,6 +40,13 @@ struct ContentView: View {
                     Text("Deck")
                 }
                 .tag(Tab.deck)
+
+                AboutScreen()
+                    .tabItem {
+                        Image(systemName: "info.circle.fill")
+                        Text("About")
+                    }
+                    .tag(Tab.about)
             }
 
             if selectedTab == .cardList {
