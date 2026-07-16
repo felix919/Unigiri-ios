@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SelectedCardCell: View {
     let card: DeckCardModel
+    var showsCountBadge = true
 
     var body: some View {
         let url = URL(string: card.img)
@@ -20,7 +21,7 @@ struct SelectedCardCell: View {
             .resizable()
             .aspectRatio(0.715, contentMode: .fill)
             .overlay(alignment: .topTrailing) {
-                if card.count > 1 {
+                if showsCountBadge && card.count > 1 {
                     CountBadge(count: card.count)
                 }
             }

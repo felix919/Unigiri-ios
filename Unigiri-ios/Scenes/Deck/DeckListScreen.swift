@@ -110,7 +110,7 @@ private struct DeckRow: View {
         HStack(spacing: 12) {
             HStack(spacing: 2) {
                 ForEach(deck.cards.prefix(3)) { card in
-                    SelectedCardCell(card: card)
+                    SelectedCardCell(card: card, showsCountBadge: false)
                         .frame(width: 40, height: 56)
                         .clipped()
                 }
