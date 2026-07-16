@@ -5,5 +5,6 @@ struct SearchUiState {
     var result: [ZutocaModel] = []
     var packList: [String] = []
     var songList: [String] = []
+    var illustratorList: [String] = []
     var error: String?
 }

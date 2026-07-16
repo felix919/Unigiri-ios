@@ -28,6 +28,12 @@ class SearchViewModel: ObservableObject {
         Task { await fetch() }
     }
 
+    // MARK: - Keyword
+
+    func updateKeyword(_ keyword: String) {
+        condition.keyword = keyword
+    }
+
     // MARK: - Rare
 
     func updateRare(_ rare: String) {
@@ -101,6 +107,16 @@ class SearchViewModel: ObservableObject {
         condition.attackRange = range
     }
 
+    // MARK: - Cost / Illustrator
+
+    func updateCostRange(_ range: ClosedRange<Int>) {
+        condition.costRange = range
+    }
+
+    func updateIllustrator(_ illustrator: String?) {
+        condition.illustrator = illustrator
+    }
+
     // MARK: - Private
 
     private func fetch() async {
@@ -119,6 +135,9 @@ class SearchViewModel: ObservableObject {
                 .compactMap { $0.songs }
                 .unique()
                 .filter { !$0.isEmpty }
+            uiState.illustratorList = result.hits
+                .map { $0.illustrator }
+                .unique()
             uiState.result = filterResult(raw: result, condition: condition)
             uiState.isLoading = false
         } catch {
@@ -129,6 +148,9 @@ class SearchViewModel: ObservableObject {
 
     private func filterResult(raw: SearchResultModel, condition: SearchCondition) -> [ZutocaModel] {
         raw.hits.filter { zutoca in
+            (condition.keyword.isEmpty || [zutoca.title, zutoca.effect, zutoca.songs].contains { text in
+                text.range(of: condition.keyword, options: .caseInsensitive) != nil
+            }) &&
             (condition.rare.isEmpty || condition.rare.contains(zutoca.rare)) &&
             (condition.type.isEmpty || condition.type.contains(zutoca.type)) &&
             (condition.cardType.isEmpty || condition.cardType.contains(zutoca.cardType)) &&
@@ -151,7 +173,9 @@ class SearchViewModel: ObservableObject {
                 }
             }()) &&
             (condition.pack == nil || condition.pack!.isEmpty || zutoca.pack.contains(condition.pack!)) &&
-            (condition.song == nil || condition.song!.isEmpty || zutoca.songs.contains(condition.song!))
+            (condition.song == nil || condition.song!.isEmpty || zutoca.songs.contains(condition.song!)) &&
+            condition.costRange.contains(zutoca.cost) &&
+            (condition.illustrator == nil || condition.illustrator!.isEmpty || zutoca.illustrator.contains(condition.illustrator!))
         }
     }
 }

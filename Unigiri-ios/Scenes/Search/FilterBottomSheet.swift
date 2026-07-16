@@ -7,6 +7,11 @@ struct FilterBottomSheet: View {
     var body: some View {
         NavigationStack {
             List {
+                // フリーワード検索
+                Section("フリーワード検索") {
+                    filterKeywordSection
+                }
+
                 // 属性
                 Section("属性") {
                     filterTypeSection
@@ -37,9 +42,19 @@ struct FilterBottomSheet: View {
                     filterPowerSection
                 }
 
+                // Power Cost
+                Section("POWER COST") {
+                    filterCostRangeSection
+                }
+
                 // 攻撃力
                 Section("攻撃力") {
                     filterAttackRangeSection
+                }
+
+                // イラストレーター
+                Section("イラストレーター") {
+                    filterIllustratorSection
                 }
             }
             .listRowBackground(Color.surfacePurpleHigh)
@@ -54,6 +69,15 @@ struct FilterBottomSheet: View {
             }
         }
         .presentationBackground(Color.surfacePurpleContainer)
+    }
+
+    // MARK: - フリーワード検索
+
+    private var filterKeywordSection: some View {
+        TextField("カード名・効果・楽曲名", text: Binding(
+            get: { viewModel.condition.keyword },
+            set: { viewModel.updateKeyword($0) }
+        ))
     }
 
     // MARK: - 属性
@@ -160,6 +184,65 @@ struct FilterBottomSheet: View {
                         viewModel.removePower(power)
                     }
                 }
+            }
+        }
+    }
+
+    // MARK: - Power Cost
+
+    private var filterCostRangeSection: some View {
+        let lowerBound = Binding(
+            get: { Double(viewModel.condition.costRange.lowerBound) },
+            set: { newVal in
+                let lower = Int(newVal)
+                let upper = viewModel.condition.costRange.upperBound
+                viewModel.updateCostRange(min(lower, upper)...upper)
+            }
+        )
+        let upperBound = Binding(
+            get: { Double(viewModel.condition.costRange.upperBound) },
+            set: { newVal in
+                let upper = Int(newVal)
+                let lower = viewModel.condition.costRange.lowerBound
+                viewModel.updateCostRange(lower...max(upper, lower))
+            }
+        )
+
+        return VStack {
+            HStack {
+                Text("\(viewModel.condition.costRange.lowerBound)")
+                Spacer()
+                Text("\(viewModel.condition.costRange.upperBound)")
+            }
+
+            Slider(value: lowerBound, in: 0...10, step: 1) {
+                Text("最小")
+            }
+
+            Slider(value: upperBound, in: 0...10, step: 1) {
+                Text("最大")
+            }
+
+            HStack {
+                Text("0")
+                Spacer()
+                Text("10")
+            }
+            .font(.caption)
+            .foregroundColor(.secondary)
+        }
+    }
+
+    // MARK: - イラストレーター
+
+    private var filterIllustratorSection: some View {
+        let illustratorList = ["すべて"] + viewModel.uiState.illustratorList.sorted()
+        return Picker("イラストレーター", selection: Binding(
+            get: { viewModel.condition.illustrator ?? "すべて" },
+            set: { viewModel.updateIllustrator($0 == "すべて" ? nil : $0) }
+        )) {
+            ForEach(illustratorList, id: \.self) { illustrator in
+                Text(illustrator).tag(illustrator)
             }
         }
     }
