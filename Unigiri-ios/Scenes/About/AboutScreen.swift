@@ -11,10 +11,19 @@ struct AboutScreen: View {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
     }
 
+    // プロジェクト設定の表示名 (INFOPLIST_KEY_CFBundleDisplayName) から取得
+    private var appName: String {
+        if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
+           !displayName.isEmpty {
+            return displayName
+        }
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "うにぎり"
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("うにぎり")
+                Text(appName)
                     .font(.system(size: 24, weight: .bold))
 
                 Text("バージョン \(appVersion)")
